@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
+using GarbageCollector.Services;
+using GarbageCollector.Services.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -32,7 +34,7 @@ namespace GarbageCollector
         {
             services.AddEntityFrameworkNpgsql().AddDbContext<GarbageCollectorContext>(options =>
                 options
-                    .UseNpgsql(Configuration.GetConnectionString("KonStr"), x => x.UseNetTopologySuite())
+                    .UseNpgsql(Configuration.GetConnectionString(""), x => x.UseNetTopologySuite())
                     .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning)));
 
             #region AutomapperConfig
@@ -71,6 +73,9 @@ namespace GarbageCollector
             #endregion
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.Configure<DomainOptions>(Configuration.GetSection(nameof(DomainOptions)));
+            services.AddTransient<IDataUploader, DataUploader>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
