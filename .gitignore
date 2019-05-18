@@ -31,6 +31,8 @@ packages
 Assemblies
 .release*
 
+appsettings.*.json
+
 # Cassandra
 commitlog/*
 data/*
