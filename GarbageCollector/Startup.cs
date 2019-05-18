@@ -33,6 +33,8 @@ namespace GarbageCollector
         }
 
         public IConfiguration Configuration { get; }
+        
+        private readonly string CorsPolicyName = "CorsPolicy";
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -63,6 +65,14 @@ namespace GarbageCollector
                 c.SwaggerDoc("v1", new Info { Title = "GarbageCollector API", Version = "v1" });
                 
             });
+            services.AddCors(options =>
+            {
+                options.AddPolicy(CorsPolicyName,
+                    builder => builder
+                        .AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
 
 
         }
@@ -80,7 +90,7 @@ namespace GarbageCollector
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
