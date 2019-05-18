@@ -1,15 +1,17 @@
+using System;
 using System.Threading.Tasks;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Extensions;
 using GarbageCollector.ViewModels;
+using JetBrains.Annotations;
 using Microsoft.EntityFrameworkCore;
 
 namespace GarbageCollector.Domain.Services
 {
     public class UserWorkflowsService
     {
-        private IMapper mapper;
+        private readonly IMapper mapper;
         private readonly GarbageCollectorContext dbContext;
         private readonly CategoriesService categoriesService;
         private readonly WasteTakePointService wasteTakePointService;
@@ -38,8 +40,15 @@ namespace GarbageCollector.Domain.Services
         }
 
         private async Task<bool> CheckIsPossibleCreateUserAsync(GarbageAppUser user) =>
-            !user.Login.IsNullOrEmpty() &&
-            (await dbContext.AppUsers.AnyAsync(dbuser => dbuser.Login == user.Login)
+            !user.Login.IsNullOrEmpty() && user.Id != default(Guid) &&
+            (await dbContext.AppUsers.AnyAsync(dbuser => dbuser.Login == user.Login || dbuser.Id == user.Id)
                 .ConfigureAwait(false));
+
+        public async Task<UserViewModel> GetUserAsync([NotNull] string userLogin)
+        {
+            var userDbo = dbContext.AppUsers.FirstOrDefaultAsync(u => u.Login == userLogin);
+            var user = mapper.Map<GarbageAppUser>(userDbo);
+            return mapper.Map<UserViewModel>(user);
+        }
     }
 }
