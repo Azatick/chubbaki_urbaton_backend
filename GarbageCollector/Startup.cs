@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
 using Microsoft.AspNetCore.Builder;
@@ -31,8 +32,29 @@ namespace GarbageCollector
         {
             services.AddEntityFrameworkNpgsql().AddDbContext<GarbageCollectorContext>(options =>
                 options
-                    .UseNpgsql(Configuration.GetConnectionString("KonStr"), x=>x.UseNetTopologySuite())
+                    .UseNpgsql(Configuration.GetConnectionString("KonStr"), x => x.UseNetTopologySuite())
                     .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning)));
+
+            #region AutomapperConfig
+
+            var mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<GarbageAppUserDbo, GarbageAppUser>()
+                    .IncludeAllDerived()
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter();
+                cfg.CreateMap<LocationDbo, Location>()
+                    .IncludeAllDerived()
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter();
+
+                cfg.CreateMap<TrashCanDbo, TrashCan>()
+                    .IncludeAllDerived()
+                    .ForMember(tc => tc.WasteCategories,
+                        opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter();
+            });
+            services.AddSingleton(mapperConfig.CreateMapper());
+
+            #endregion
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
