@@ -16,7 +16,7 @@ namespace GarbageCollector.Controllers
             this.workflowsService = workflowsService;
         }
 
-        [Route("signup")]
+        //[Route("signup")]
         public async Task<IActionResult> BeginWorkAsync(UserViewModel user)
         {
             if (await workflowsService.TryCreateUserAsync(user).ConfigureAwait(true))
