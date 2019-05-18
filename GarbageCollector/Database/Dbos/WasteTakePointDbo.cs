@@ -8,6 +8,10 @@ namespace GarbageCollector.Database.Dbos
     {
         [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
+        
+        public string Name { get; set; }
+        
+        public LocationDbo Location { get; set; }
         public WasteTakePointToCategoryLinkDbo[] LinksToCategories { get; set; }
     }
 }

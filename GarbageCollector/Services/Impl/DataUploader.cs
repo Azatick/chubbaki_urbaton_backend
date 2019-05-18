@@ -1,7 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using AutoMapper;
+using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using NetTopologySuite.Geometries;
 using Newtonsoft.Json;
 
 namespace GarbageCollector.Services.Impl
@@ -10,14 +16,38 @@ namespace GarbageCollector.Services.Impl
     {
         private IOptions<DomainOptions> _options;
 
-        public DataUploader(IOptions<DomainOptions> options)
+        private GarbageCollectorContext _dbContext;
+
+        private IMapper _mapper;
+        
+
+        public DataUploader(IOptions<DomainOptions> options,
+            GarbageCollectorContext dbContext, IMapper mapper)
         {
             _options = options;
+            _dbContext = dbContext;
+            _mapper = mapper;
         }
         public IEnumerable<ImportModel> Upload()
         {
             var file = File.ReadAllText(_options.Value.JsonPath);
             var points = JsonConvert.DeserializeObject<List<ImportModel>>(file);
+
+            var dboWasteTakePoints = points.Select(x => new WasteTakePoint
+            {
+                Id = Guid.NewGuid(),
+                Location = new Location
+                {
+                    Id = new Guid(),
+                    Coordinates = new Point(x.Longitude, x.Latitude)
+
+                },
+                Name = x.Type
+            }).ToList();
+            
+            _dbContext.WasteTakePoints.AddRange(dboWasteTakePoints);
+
+            _dbContext.SaveChanges();
 
             return points;
         }

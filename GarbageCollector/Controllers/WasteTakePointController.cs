@@ -1,0 +1,27 @@
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GarbageCollector.Database.Dbos;
+using GarbageCollector.Domain;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace GarbageCollector.Controllers
+{
+    [Route("api/[controller]")]
+    public class WasteTakePointController : Controller
+    {
+        private GarbageCollectorContext _dbcontext;
+        
+        public WasteTakePointController(GarbageCollectorContext dbContext)
+        {
+            _dbcontext = dbContext;
+        }
+        
+        [HttpGet]
+        public List<WasteTakePoint> List()
+        {
+           return _dbcontext.WasteTakePoints.Include(x => x.Location).ToList();
+        }
+    }
+}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -17,6 +18,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace GarbageCollector
 {
@@ -34,7 +36,7 @@ namespace GarbageCollector
         {
             services.AddEntityFrameworkNpgsql().AddDbContext<GarbageCollectorContext>(options =>
                 options
-                    .UseNpgsql(Configuration.GetConnectionString(""), x => x.UseNetTopologySuite())
+                    .UseNpgsql(Configuration.GetConnectionString("KonStr"), x => x.UseNetTopologySuite())
                     .ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning)));
 
             #region AutomapperConfig
@@ -75,6 +77,12 @@ namespace GarbageCollector
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.Configure<DomainOptions>(Configuration.GetSection(nameof(DomainOptions)));
             services.AddTransient<IDataUploader, DataUploader>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "GarbageCollector API", Version = "v1" });
+                
+            });
+
 
         }
 
@@ -93,6 +101,11 @@ namespace GarbageCollector
 
             app.UseHttpsRedirection();
             app.UseMvc();
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
         }
     }
 }
