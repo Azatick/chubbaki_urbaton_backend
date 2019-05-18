@@ -5,20 +5,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 using GeoAPI.Geometries;
-using Microsoft.EntityFrameworkCore;
 
 namespace GarbageCollector.Domain
 {
     public class GarbageAppUser
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public string Login { get; set; }
         public ICollection<TrashCan> TrashCans { get; set; }
 
-        public Guid CurrentLocationId { get; set; }
-        [ForeignKey("CurrentLocationId")]
         public Location CurrentLocation { get; set; }
 
         public async Task UpdateTrashCansByCurrentLocationAsync()
@@ -74,7 +70,6 @@ namespace GarbageCollector.Domain
 
     public class Location
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
         public string Address { get; set; }
         public IPoint Coordinates { get; set; }
@@ -82,18 +77,13 @@ namespace GarbageCollector.Domain
 
     public class TrashCan
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
-
-        public Guid WasteTakePointId { get; set; }
-        [ForeignKey("WasteTakePointId")]
         public WasteTakePoint WasteTakePoint { get; set; }
         public ICollection<WasteCategory> WasteCategories { get; set; }
     }
 
     public class WasteTakePoint
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
 
         public Location Location { get; set; }
@@ -107,8 +97,8 @@ namespace GarbageCollector.Domain
 
     public class WasteCategory
     {
-        [Key, DatabaseGenerated(DatabaseGeneratedOption.None)]
         public Guid Id { get; set; }
+
         public string Name { get; set; }
         public Material Material { get; set; }
     }
@@ -117,13 +107,5 @@ namespace GarbageCollector.Domain
     {
         None = 0,
         Plastic = 1
-    }
-
-    public class GarbageCollectorContext : DbContext
-    {
-        public DbSet<Location> Locations { get; set; }
-        public DbSet<WasteCategory> WasteCategories { get; set; }
-        public DbSet<WasteTakePoint> WasteTakePoints { get; set; }
-        public DbSet<GarbageAppUser> AppUsers { get; set; }
     }
 }
