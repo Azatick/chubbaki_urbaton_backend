@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
+using GarbageCollector.Mapping;
 using GarbageCollector.Services;
 using GarbageCollector.Services.Impl;
 using GarbageCollector.ViewModels;
@@ -42,44 +43,11 @@ namespace GarbageCollector
 
             #region AutomapperConfig
 
-            var mapperConfig = new MapperConfiguration(cfg =>
+            var mappingConfig = new MapperConfiguration(cfg =>
             {
-                cfg.CreateMap<GarbageAppUserDbo, GarbageAppUser>()
-                    .IncludeAllDerived()
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                    .ReverseMap();
-                cfg.CreateMap<LocationDbo, Location>()
-                    .IncludeAllDerived()
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                    .ReverseMap();
-
-                cfg.CreateMap<TrashCanDbo, TrashCan>()
-                    .IncludeAllDerived()
-                    .ForMember(tc => tc.WasteCategories,
-                        opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                    .ReverseMap();
-                cfg.CreateMap<WasteCategoryDbo, WasteCategory>()
-                    .IncludeAllDerived()
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                    .ReverseMap();
-                
-                cfg.CreateMap<WasteTakePointDbo, WasteTakePoint>()
-                    .IncludeAllDerived()
-                    .ForMember(tc => tc.AcceptingCategories,
-                        opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                    .ReverseMap();
-
-                cfg.CreateMap<LocationDbo, LocationViewModel>()
-                    .ForMember(x => x.Latitude, x => x.MapFrom(s => s.Coordinates.X))
-                    .ForMember(x => x.Longitude, x => x.MapFrom(s => s.Coordinates.Y));
-
-                cfg.CreateMap<WasteTakePointDbo, WasteTakePointViewModel>()
-                    .ForMember(x => x.Location, x => x.MapFrom(s => s.Location))
-                    .ForMember(x => x.Name, x => x.MapFrom(s => s.Name));
+                cfg.AddProfile(new MappingProfile());
             });
-            services.AddSingleton(mapperConfig.CreateMapper());
+            services.AddSingleton(mappingConfig.CreateMapper());
 
             #endregion
 
