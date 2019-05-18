@@ -70,3 +70,4 @@ gathered_info.json
 *.nupkg
 *.DotSettings
 /Jarvis.Console/*
+/.idea/.idea.GarbageCollector/riderModule.iml
