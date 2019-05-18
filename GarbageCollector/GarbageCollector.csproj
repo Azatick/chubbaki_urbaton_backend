@@ -27,4 +27,10 @@
       </Content>
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="categories">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

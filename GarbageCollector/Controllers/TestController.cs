@@ -21,5 +21,12 @@ namespace GarbageCollector.Controllers
 
             return Json(points.Take(20));
         }
+        [HttpGet("/uploadCats")]
+        public IActionResult UploadCats()
+        {
+            _dataUploader.ImportCategories();
+
+            return Ok();
+        }
     }
 }

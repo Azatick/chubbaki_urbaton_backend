@@ -6,5 +6,6 @@ namespace GarbageCollector.Services
     public interface IDataUploader
     {
         IEnumerable<ImportModel> Upload();
+        void ImportCategories();
     }
 }
