@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
-using GeoAPI.Geometries;
 
 namespace GarbageCollector.Domain
 {
@@ -66,46 +65,5 @@ namespace GarbageCollector.Domain
                 WasteTakePoint = tp
             }).ToHashSet();
         }
-    }
-
-    public class Location
-    {
-        public Guid Id { get; set; }
-        public string Address { get; set; }
-        public IPoint Coordinates { get; set; }
-    }
-
-    public class TrashCan
-    {
-        public Guid Id { get; set; }
-        public WasteTakePoint WasteTakePoint { get; set; }
-        public ICollection<WasteCategory> WasteCategories { get; set; }
-    }
-
-    public class WasteTakePoint
-    {
-        public Guid Id { get; set; }
-
-        public Location Location { get; set; }
-        public ICollection<WasteCategory> AcceptingCategories { get; set; }
-
-        public static async Task<WasteTakePoint[]> GetNearestTakePoinsAsync(Location location)
-        {
-            return Array.Empty<WasteTakePoint>();
-        }
-    }
-
-    public class WasteCategory
-    {
-        public Guid Id { get; set; }
-
-        public string Name { get; set; }
-        public Material Material { get; set; }
-    }
-
-    public enum Material
-    {
-        None = 0,
-        Plastic = 1
     }
 }
