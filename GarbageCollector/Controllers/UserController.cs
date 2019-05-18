@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using GarbageCollector.Domain;
@@ -20,6 +21,9 @@ namespace GarbageCollector.Controllers
 
         [HttpPost]
         [Route("signup")]
+        [ProducesResponseType(typeof(UserViewModel), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> BeginWorkAsync(UserViewModel user)
         {
             var userViewModel = (await workflowsService.CreateUserAsync(user).ConfigureAwait(true));
@@ -33,6 +37,9 @@ namespace GarbageCollector.Controllers
 
         [HttpGet]
         [Route("")]
+        [ProducesResponseType(typeof(UserViewModel), 200)]
+        [ProducesResponseType(400)]
+        [ProducesResponseType(404)]
         public async Task<IActionResult> GetUser([FromQuery][Required(AllowEmptyStrings = false)] string userLogin)
         {
             var user = await workflowsService.GetUserAsync(userLogin).ConfigureAwait(true);
