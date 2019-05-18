@@ -10,6 +10,8 @@ namespace GarbageCollector.Mapping
     {
         public MappingProfile()
         {
+            #region Dbo -> Model
+
             CreateMap<GarbageAppUserDbo, GarbageAppUser>()
                 .IncludeAllDerived()
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
@@ -29,13 +31,30 @@ namespace GarbageCollector.Mapping
                 .IncludeAllDerived()
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .ReverseMap();
-                
+
             CreateMap<WasteTakePointDbo, WasteTakePoint>()
                 .IncludeAllDerived()
                 .ForMember(tc => tc.AcceptingCategories,
                     opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .ReverseMap();
+
+            #endregion
+
+            #region ViewModel <-> Model
+
+            CreateMap<UserViewModel, GarbageAppUser>()
+                .IncludeAllDerived()
+                .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                .ForMember(model => model.TrashCans, opt => opt.Ignore())
+                .ReverseMap();
+
+            #endregion
+
+
+            CreateMap<WasteTakePointDbo, WasteTakePointViewModel>()
+                .ForMember(x => x.Location, x => x.MapFrom(s => s.Location))
+                .ForMember(x => x.Name, x => x.MapFrom(s => s.Name));
 
             CreateMap<LocationDbo, LocationViewModel>()
                 .ForMember(x => x.Latitude, x => x.MapFrom(s => s.Coordinates.Y))

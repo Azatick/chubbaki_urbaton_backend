@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
+using GarbageCollector.Domain.Services;
 using GarbageCollector.Mapping;
 using GarbageCollector.Services;
 using GarbageCollector.Services.Impl;
@@ -54,6 +55,9 @@ namespace GarbageCollector
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
             services.Configure<DomainOptions>(Configuration.GetSection(nameof(DomainOptions)));
             services.AddTransient<IDataUploader, DataUploader>();
+            services.AddTransient<CategoriesService>();
+            services.AddTransient<UserWorkflowsService>();
+            services.AddTransient<WasteTakePointService>();
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "GarbageCollector API", Version = "v1" });

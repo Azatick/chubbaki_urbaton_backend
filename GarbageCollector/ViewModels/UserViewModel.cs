@@ -10,5 +10,7 @@ namespace GarbageCollector.ViewModels
 
         public TrashCanViewModel[] TrashCans { get; set; }
 
+        public LocationViewModel CurrentLocation { get; set; }
+
     }
 }
