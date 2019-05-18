@@ -38,8 +38,8 @@ namespace GarbageCollector.Mapping
                 .ReverseMap();
 
             CreateMap<LocationDbo, LocationViewModel>()
-                .ForMember(x => x.Latitude, x => x.MapFrom(s => s.Coordinates.X))
-                .ForMember(x => x.Longitude, x => x.MapFrom(s => s.Coordinates.Y));
+                .ForMember(x => x.Latitude, x => x.MapFrom(s => s.Coordinates.Y))
+                .ForMember(x => x.Longitude, x => x.MapFrom(s => s.Coordinates.X));
 
             CreateMap<WasteTakePointDbo, WasteTakePointViewModel>()
                 .ForMember(x => x.Location, x => x.MapFrom(s => s.Location))
