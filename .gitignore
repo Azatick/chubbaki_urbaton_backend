@@ -16,8 +16,6 @@ securityLogs
 .vs/
 .vscode/
 _ReSharper*/
-/*.sln
-/*.sln.DotSettings
 
 # Binaries
 [Bb]in
