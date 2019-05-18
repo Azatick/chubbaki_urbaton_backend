@@ -36,13 +36,14 @@ namespace GarbageCollector.Domain.Services
             await user.UpdateTrashCansByCurrentLocationAsync().ConfigureAwait(false);
             var dbUser = mapper.Map<GarbageAppUserDbo>(user);
             await dbContext.AppUsers.AddAsync(dbUser).ConfigureAwait(false);
+            await dbContext.SaveChangesAsync().ConfigureAwait(false);
             return mapper.Map<UserViewModel>(user);
         }
 
         private async Task<bool> CheckIsPossibleCreateUserAsync(GarbageAppUser user) =>
-            !user.Login.IsNullOrEmpty() && user.Id != default(Guid) &&
+            !(user.Login.IsNullOrEmpty() || user.Id == default(Guid) &&
             (await dbContext.AppUsers.AnyAsync(dbuser => dbuser.Login == user.Login || dbuser.Id == user.Id)
-                .ConfigureAwait(false));
+                .ConfigureAwait(false)));
 
         public async Task<UserViewModel> GetUserAsync([NotNull] string userLogin)
         {

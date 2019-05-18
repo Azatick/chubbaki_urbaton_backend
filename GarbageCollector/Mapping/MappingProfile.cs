@@ -3,6 +3,10 @@ using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
 using GarbageCollector.ViewModels;
+using GeoAPI.Geometries;
+using NetTopologySuite.Geometries;
+using NetTopologySuite.Geometries.Utilities;
+using Location = GarbageCollector.Domain.Location;
 
 namespace GarbageCollector.Mapping
 {
@@ -54,7 +58,11 @@ namespace GarbageCollector.Mapping
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .ForMember(x => x.Latitude, x => x.MapFrom(s => s.Coordinates.Y))
                 .ForMember(x => x.Longitude, x => x.MapFrom(s => s.Coordinates.X))
-                .ReverseMap();
+                .ReverseMap()
+                .BeforeMap((model, location) =>
+                {
+                    location.Coordinates = new Point(model.Longitude, model.Latitude, 4326);
+                });
 
             #endregion
 

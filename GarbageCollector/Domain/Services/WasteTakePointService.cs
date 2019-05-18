@@ -19,11 +19,17 @@ namespace GarbageCollector.Domain.Services
 
         public async Task<WasteTakePoint[]> GetNearestTakePoinsAsync(Location location)
         {
+            var magicValue = GetKilometers(1);
             var takePointDbos = await context.WasteTakePoints
-                .Where(x => x.Location.Coordinates.IsWithinDistance(location.Coordinates, 0.15))
+                .Where(x => x.Location.Coordinates.Distance(location.Coordinates) < magicValue)
                 .OrderBy(x => x.Location.Coordinates.Distance(location.Coordinates))
                 .ToArrayAsync().ConfigureAwait(false);
             return mapper.Map<WasteTakePoint[]>(takePointDbos);
+        }
+
+        private double GetKilometers(int kilometers)
+        {
+            return 0.015 * kilometers;
         }
     }
 }
