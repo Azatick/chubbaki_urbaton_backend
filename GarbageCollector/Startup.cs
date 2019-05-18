@@ -41,16 +41,30 @@ namespace GarbageCollector
             {
                 cfg.CreateMap<GarbageAppUserDbo, GarbageAppUser>()
                     .IncludeAllDerived()
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter();
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                    .ReverseMap();
                 cfg.CreateMap<LocationDbo, Location>()
                     .IncludeAllDerived()
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter();
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                    .ReverseMap();
 
                 cfg.CreateMap<TrashCanDbo, TrashCan>()
                     .IncludeAllDerived()
                     .ForMember(tc => tc.WasteCategories,
                         opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
-                    .IgnoreAllPropertiesWithAnInaccessibleSetter();
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                    .ReverseMap();
+                cfg.CreateMap<WasteCategoryDbo, WasteCategory>()
+                    .IncludeAllDerived()
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                    .ReverseMap();
+                
+                cfg.CreateMap<WasteTakePointDbo, WasteTakePoint>()
+                    .IncludeAllDerived()
+                    .ForMember(tc => tc.AcceptingCategories,
+                        opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
+                    .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                    .ReverseMap();
             });
             services.AddSingleton(mapperConfig.CreateMapper());
 
