@@ -10,6 +10,7 @@ namespace GarbageCollector.Domain
 
         public Location Location { get; set; }
         public ICollection<WasteCategory> AcceptingCategories { get; set; }
+        public string Name { get; set; }
 
         public static async Task<WasteTakePoint[]> GetNearestTakePoinsAsync(Location location)
         {

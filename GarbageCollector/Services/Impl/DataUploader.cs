@@ -33,10 +33,10 @@ namespace GarbageCollector.Services.Impl
             var file = File.ReadAllText(_options.Value.JsonPath);
             var points = JsonConvert.DeserializeObject<List<ImportModel>>(file);
 
-            var dboWasteTakePoints = points.Select(x => new WasteTakePoint
+            var dboWasteTakePoints = points.Select(x => new WasteTakePointDbo
             {
                 Id = Guid.NewGuid(),
-                Location = new Location
+                Location = new LocationDbo
                 {
                     Id = new Guid(),
                     Coordinates = new Point(x.Longitude, x.Latitude)

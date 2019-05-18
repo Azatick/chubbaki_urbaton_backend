@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
 using Microsoft.AspNetCore.Mvc;
@@ -19,7 +20,7 @@ namespace GarbageCollector.Controllers
         }
         
         [HttpGet]
-        public List<WasteTakePoint> List()
+        public List<WasteTakePointDbo> List()
         {
            return _dbcontext.WasteTakePoints.Include(x => x.Location).ToList();
         }

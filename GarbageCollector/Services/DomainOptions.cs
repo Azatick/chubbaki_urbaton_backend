@@ -1,4 +1,4 @@
-namespace GarbageCollector.Domain
+namespace GarbageCollector.Services
 {
     public class DomainOptions
     {
