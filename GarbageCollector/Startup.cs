@@ -8,6 +8,7 @@ using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
 using GarbageCollector.Services;
 using GarbageCollector.Services.Impl;
+using GarbageCollector.ViewModels;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -69,6 +70,14 @@ namespace GarbageCollector
                         opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
                     .IgnoreAllPropertiesWithAnInaccessibleSetter()
                     .ReverseMap();
+
+                cfg.CreateMap<LocationDbo, LocationViewModel>()
+                    .ForMember(x => x.Latitude, x => x.MapFrom(s => s.Coordinates.X))
+                    .ForMember(x => x.Longitude, x => x.MapFrom(s => s.Coordinates.Y));
+
+                cfg.CreateMap<WasteTakePointDbo, WasteTakePointViewModel>()
+                    .ForMember(x => x.Location, x => x.MapFrom(s => s.Location))
+                    .ForMember(x => x.Name, x => x.MapFrom(s => s.Name));
             });
             services.AddSingleton(mapperConfig.CreateMapper());
 

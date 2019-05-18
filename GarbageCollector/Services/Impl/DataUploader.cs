@@ -38,7 +38,7 @@ namespace GarbageCollector.Services.Impl
                 Id = Guid.NewGuid(),
                 Location = new LocationDbo
                 {
-                    Id = new Guid(),
+                    Id = Guid.NewGuid(),
                     Coordinates = new Point(x.Longitude, x.Latitude)
 
                 },

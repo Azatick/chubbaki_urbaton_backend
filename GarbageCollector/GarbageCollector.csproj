@@ -19,4 +19,11 @@
       <Folder Include="Assets" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Content Update="data.json">
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>
