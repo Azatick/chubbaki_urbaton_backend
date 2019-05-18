@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using GarbageCollector.Domain;
+using GarbageCollector.Domain.Services;
 using GarbageCollector.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +20,10 @@ namespace GarbageCollector.Controllers
         [Route("signup")]
         public async Task<IActionResult> BeginWorkAsync(UserViewModel user)
         {
-            if (await workflowsService.TryCreateUserAsync(user).ConfigureAwait(true))
+            var userViewModel = (await workflowsService.CreateUserAsync(user).ConfigureAwait(true));
+            if (userViewModel != null)
             {
-                return Ok();
+                return Ok(userViewModel);
             }
 
             return BadRequest();

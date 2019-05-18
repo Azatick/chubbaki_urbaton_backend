@@ -4,23 +4,32 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
+using GarbageCollector.Domain.Services;
 
 namespace GarbageCollector.Domain
 {
     public class GarbageAppUser
     {
+        private CategoriesService categoriesService;
+        private WasteTakePointService wasteTakePointService;
+        public GarbageAppUser() {}
         public Guid Id { get; set; }
 
         public string Login { get; set; }
         public ICollection<TrashCan> TrashCans { get; set; }
 
         public Location CurrentLocation { get; set; }
+        public void AddServices(CategoriesService categoriesService, WasteTakePointService wasteTakePointService)
+        {
+            this.categoriesService = categoriesService;
+            this.wasteTakePointService = wasteTakePointService;
+        }
 
         public async Task UpdateTrashCansByCurrentLocationAsync()
         {
-            var leftCategories = new HashSet<WasteCategory>();
+            var leftCategories = (await categoriesService.GetAllCategoriesAsync().ConfigureAwait(false)).ToHashSet();
             var leftNearestTakePoints =
-                (await WasteTakePoint.GetNearestTakePoinsAsync(CurrentLocation).ConfigureAwait(false))
+                (await wasteTakePointService.GetNearestTakePoinsAsync(CurrentLocation).ConfigureAwait(false))
                 .ToHashSet();
             var acceptableTakePoints = new HashSet<WasteTakePoint>();
             var continueLoop = true;
