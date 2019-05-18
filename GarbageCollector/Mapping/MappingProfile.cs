@@ -48,6 +48,13 @@ namespace GarbageCollector.Mapping
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .ForMember(model => model.TrashCans, opt => opt.Ignore())
                 .ReverseMap();
+            
+            CreateMap<Location, LocationViewModel>()
+                .IncludeAllDerived()
+                .IgnoreAllPropertiesWithAnInaccessibleSetter()
+                .ForMember(x => x.Latitude, x => x.MapFrom(s => s.Coordinates.Y))
+                .ForMember(x => x.Longitude, x => x.MapFrom(s => s.Coordinates.X))
+                .ReverseMap();
 
             #endregion
 
