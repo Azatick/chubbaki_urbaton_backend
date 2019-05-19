@@ -36,7 +36,7 @@ namespace GarbageCollector.Mapping
                 {
                     if (can.Id == Guid.Empty)
                     {
-                        can.Id = new Guid();
+                        can.Id = Guid.NewGuid();
                     }
                 });
             CreateMap<WasteCategoryDbo, WasteCategory>()
@@ -47,7 +47,7 @@ namespace GarbageCollector.Mapping
                 {
                     if (category.Id == Guid.Empty)
                     {
-                        category.Id = new Guid();
+                        category.Id = Guid.NewGuid();
                     }
                 });
 
