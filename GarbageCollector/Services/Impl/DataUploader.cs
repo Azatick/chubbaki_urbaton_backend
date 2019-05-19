@@ -110,30 +110,31 @@ namespace GarbageCollector.Services.Impl
                     x => (PointName: x[0], Categories: x[1]
                         .Split(",", StringSplitOptions.RemoveEmptyEntries)
                         .Select(y => y.Trim()).Distinct().ToArray())
-                );
+                ).ToArray();
             foreach (var pointWithCategories in pointsWithCategories)
             {
-                var point = await
-                    _dbContext.WasteTakePoints.Include(x => x.LinksToCategories).ThenInclude(x => x.Category)
-                        .FirstOrDefaultAsync(p => p.Name ==
-                                                  pointWithCategories.PointName).ConfigureAwait(false);
+                var points = await
+                    _dbContext.WasteTakePoints
+                        .Where(p => p.Name == pointWithCategories.PointName).ToListAsync().ConfigureAwait(false);
                 var categories = await _dbContext.WasteCategories.Where(c => pointWithCategories.Categories.Contains(c
                     .Name)).ToListAsync().ConfigureAwait(false);
-                if (point != null && categories.Any())
+                if (!points.IsNullOrEmpty() && categories.Any())
                 {
-                    point.LinksToCategories = categories.Select(c => new WasteTakePointToCategoryLinkDbo()
-                    {
-                        Id = Guid.NewGuid(),
-                        Category = c,
-                        WasteTakePoint = point
-                    }).ToList();
+                    points.Select(point => point.LinksToCategories = categories.Select(c => new
+                        WasteTakePointToCategoryLinkDbo()
+                        {
+                            Id = Guid.NewGuid(),
+                            CategoryId = c.Id,
+                            WasteTakePointId = point.Id
+                        }).ToList()).ToList();
                 }
                 else
                 {
-                    Console.WriteLine($"Bad Line: {pointWithCategories.PointName} _ {string.Join(',', pointWithCategories.Categories)}");
+                    Console.WriteLine(
+                        $"Bad Line: {pointWithCategories.PointName} _ {string.Join(',', pointWithCategories.Categories)}");
                 }
             }
-            
+
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         }
 
