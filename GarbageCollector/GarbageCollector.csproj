@@ -31,6 +31,9 @@
       <None Update="categories">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </None>
+      <None Update="pointsToCatMap">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
     </ItemGroup>
 
 </Project>

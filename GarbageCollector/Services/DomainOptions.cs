@@ -4,5 +4,6 @@ namespace GarbageCollector.Services
     {
         public string JsonPath { get; set; }
         public string CategoriesPath { get; set; }
+        public string PointsToCatMapPath { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using GarbageCollector.Services.Impl;
 
 namespace GarbageCollector.Services
@@ -7,5 +8,6 @@ namespace GarbageCollector.Services
     {
         IEnumerable<ImportModel> Upload();
         void ImportCategories();
+        Task MapPointsToCategoriesAsync();
     }
 }

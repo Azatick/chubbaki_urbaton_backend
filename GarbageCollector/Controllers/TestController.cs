@@ -1,7 +1,9 @@
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using GarbageCollector.Services;
+using JetBrains.Annotations;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GarbageCollector.Controllers
@@ -25,6 +27,13 @@ namespace GarbageCollector.Controllers
         public IActionResult UploadCats()
         {
             _dataUploader.ImportCategories();
+
+            return Ok();
+        }
+        [CanBeNull] [HttpGet("/makePointsToCatsLinks")]
+        public async Task<IActionResult> MakePointsToCatsLinks()
+        {
+            await _dataUploader.MapPointsToCategoriesAsync().ConfigureAwait(true);
 
             return Ok();
         }

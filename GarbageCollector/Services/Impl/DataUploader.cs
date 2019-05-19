@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading.Tasks;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
@@ -59,8 +60,8 @@ namespace GarbageCollector.Services.Impl
         public void ImportCategories()
         {
             var file = File.ReadAllLines(_options.Value.CategoriesPath);
-            var categoriesByMateria = file.Select(x => x.Split("_", StringSplitOptions.RemoveEmptyEntries).Select(y 
-            => y.Trim()).ToArray()).Where(x =>
+            var categoriesByMateria = file.Select(x => x.Split("_", StringSplitOptions.RemoveEmptyEntries).Select(y
+                    => y.Trim()).ToArray()).Where(x =>
                 {
                     if (!x.IsNullOrEmpty() && x.Count() > 1)
                     {
@@ -77,25 +78,76 @@ namespace GarbageCollector.Services.Impl
                     var categoriesNames = @group.SelectMany(x => x).Distinct().ToArray();
                     return (Material: materialName, Categories: categoriesNames);
                 }).ToArray();
-            var wasteCategoryDbosToAdd = categoriesByMateria.SelectMany(x => x.Categories.Select(c => new WasteCategoryDbo()
-            {
-                Id = Guid.NewGuid(),
-                Material = GetEnumValueFromDescription<Material>(x.Material),
-                Name = c
-            })).Where(x => !_dbContext.WasteCategories.Any(c => c.Name == x.Name)).ToArray();
+            var wasteCategoryDbosToAdd = categoriesByMateria.SelectMany(x => x.Categories.Select(c =>
+                new WasteCategoryDbo()
+                {
+                    Id = Guid.NewGuid(),
+                    Material = GetEnumValueFromDescription<Material>(x.Material),
+                    Name = c
+                })).Where(x => !_dbContext.WasteCategories.Any(c => c.Name == x.Name)).ToArray();
             _dbContext.WasteCategories.AddRange(wasteCategoryDbosToAdd);
             _dbContext.SaveChanges();
         }
+
+        public async Task MapPointsToCategoriesAsync()
+        {
+            var file = File.ReadAllLines(_options.Value.PointsToCatMapPath);
+            var pointsWithCategories = file
+                .Select(
+                    x => x.Split("_", StringSplitOptions.RemoveEmptyEntries).Select(y => y.Trim()).ToArray()
+                )
+                .Where(x =>
+                {
+                    if (!x.IsNullOrEmpty() && x.Count() > 1)
+                    {
+                        return true;
+                    }
+
+                    Console.WriteLine("Bad Line: " + string.Join(" _ ", x));
+                    return false;
+                })
+                .Select(
+                    x => (PointName: x[0], Categories: x[1]
+                        .Split(",", StringSplitOptions.RemoveEmptyEntries)
+                        .Select(y => y.Trim()).Distinct().ToArray())
+                );
+            foreach (var pointWithCategories in pointsWithCategories)
+            {
+                var point = await
+                    _dbContext.WasteTakePoints.Include(x => x.LinksToCategories).ThenInclude(x => x.Category)
+                        .FirstOrDefaultAsync(p => p.Name ==
+                                                  pointWithCategories.PointName).ConfigureAwait(false);
+                var categories = await _dbContext.WasteCategories.Where(c => pointWithCategories.Categories.Contains(c
+                    .Name)).ToListAsync().ConfigureAwait(false);
+                if (point != null && categories.Any())
+                {
+                    point.LinksToCategories = categories.Select(c => new WasteTakePointToCategoryLinkDbo()
+                    {
+                        Id = Guid.NewGuid(),
+                        Category = c,
+                        WasteTakePoint = point
+                    }).ToList();
+                }
+                else
+                {
+                    Console.WriteLine($"Bad Line: {pointWithCategories.PointName} _ {string.Join(',', pointWithCategories.Categories)}");
+                }
+            }
+            
+            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
         public static T GetEnumValueFromDescription<T>(string description)
         {
             MemberInfo[] fis = typeof(T).GetFields();
 
             foreach (var fi in fis)
             {
-                DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                DescriptionAttribute[] attributes =
+                    (DescriptionAttribute[]) fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
 
                 if (attributes != null && attributes.Length > 0 && attributes[0].Description == description)
-                    return (T)Enum.Parse(typeof(T), fi.Name);
+                    return (T) Enum.Parse(typeof(T), fi.Name);
             }
 
             throw new Exception("Not found");
