@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace GarbageCollector.Controllers
 {
     [ApiController]
-    [Route("user"),EnableCors("MyPolicy")]
+    [Route("api/user"),EnableCors("MyPolicy")]
     public class UserController : Controller
     {
         private readonly UserWorkflowsService workflowsService;
