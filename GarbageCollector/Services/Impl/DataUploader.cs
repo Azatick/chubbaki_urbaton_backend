@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Mime;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
 using GarbageCollector.Domain.Services;
 using GarbageCollector.Extensions;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using NetTopologySuite.Geometries;
@@ -135,6 +139,17 @@ namespace GarbageCollector.Services.Impl
             }
 
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        public async Task CreateDefaultUser()
+        {
+            const string userJson =
+                "{\r\n  \"id\": \"7a0939c4-2233-46a5-a7f1-7927c9ea133b\",\r\n  \"login\": \"Pupkin\",\r\n  \"trashCans\":[\r\n    {}\r\n  ],\r\n  \"currentLocation\": {\r\n     \"address\": \"string\",\r\n    \"longitude\": 49.145088,\r\n    \"latitude\": 55.775596\r\n  }\r\n}";
+            using (var cli = new HttpClient())
+            {
+                await cli.PostAsync("http://localhost:5010/user/signup", new StringContent(userJson, Encoding.UTF8,
+                    "application/json")).ConfigureAwait(false);
+            }
         }
 
         public static T GetEnumValueFromDescription<T>(string description)

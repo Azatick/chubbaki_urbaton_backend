@@ -9,5 +9,6 @@ namespace GarbageCollector.Services
         IEnumerable<ImportModel> Upload();
         void ImportCategories();
         Task MapPointsToCategoriesAsync();
+        Task CreateDefaultUser();
     }
 }

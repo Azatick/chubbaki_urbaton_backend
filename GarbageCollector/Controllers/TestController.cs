@@ -37,5 +37,12 @@ namespace GarbageCollector.Controllers
 
             return Ok();
         }
+        [HttpGet("/createDefaultUser")]
+        public async Task<IActionResult> CreateDefUserAsync()
+        {
+            await _dataUploader.CreateDefaultUser().ConfigureAwait(true);
+
+            return Ok("Pupkin");
+        }
     }
 }
