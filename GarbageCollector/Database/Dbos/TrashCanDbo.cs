@@ -13,6 +13,7 @@ namespace GarbageCollector.Database.Dbos
         public Guid UserId { get; set; }
         [ForeignKey("UserId")] 
         public GarbageAppUserDbo User { get; set; }
+        public string Name { get; set; } 
 
         public Guid WasteTakePointId { get; set; }
         [ForeignKey("WasteTakePointId")] 

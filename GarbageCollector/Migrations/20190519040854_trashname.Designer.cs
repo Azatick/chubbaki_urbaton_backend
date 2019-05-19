@@ -4,15 +4,17 @@ using GarbageCollector.Database.Dbos;
 using GeoAPI.Geometries;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace GarbageCollector.Migrations
 {
     [DbContext(typeof(GarbageCollectorContext))]
-    partial class GarbageCollectorContextModelSnapshot : ModelSnapshot
+    [Migration("20190519040854_trashname")]
+    partial class trashname
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

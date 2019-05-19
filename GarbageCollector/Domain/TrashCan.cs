@@ -6,6 +6,8 @@ namespace GarbageCollector.Domain
     public class TrashCan
     {
         public Guid Id { get; set; }
+
+        public string Name { get; set; }    
         public WasteTakePoint WasteTakePoint { get; set; }
         public ICollection<WasteCategory> WasteCategories { get; set; }
     }
