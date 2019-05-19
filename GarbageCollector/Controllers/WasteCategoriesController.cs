@@ -2,11 +2,12 @@ using System.Collections.Generic;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GarbageCollector.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), EnableCors("MyPolicy")]
     public class WasteCategoriesController : Controller
     {
         private GarbageCollectorContext _dbcontext;

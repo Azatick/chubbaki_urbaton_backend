@@ -5,12 +5,13 @@ using AutoMapper;
 using GarbageCollector.Database.Dbos;
 using GarbageCollector.Domain;
 using GarbageCollector.ViewModels;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace GarbageCollector.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]"), EnableCors("MyPolicy")]
     public class WasteTakePointController : Controller
     {
         private GarbageCollectorContext _dbcontext;

@@ -4,12 +4,13 @@ using System.Threading.Tasks;
 using GarbageCollector.Domain;
 using GarbageCollector.Domain.Services;
 using GarbageCollector.ViewModels;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GarbageCollector.Controllers
 {
     [ApiController]
-    [Route("user")]
+    [Route("user"),EnableCors("MyPolicy")]
     public class UserController : Controller
     {
         private readonly UserWorkflowsService workflowsService;
