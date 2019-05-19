@@ -33,7 +33,7 @@ namespace GarbageCollector.Domain
                 .ToHashSet();
             var acceptableTakePoints = new HashSet<WasteTakePoint>();
             var continueLoop = true;
-            while (leftCategories.Any() && leftNearestTakePoints.Any() && continueLoop)
+            while (continueLoop && leftCategories.Any() && leftNearestTakePoints.Any())
             {
                 continueLoop = false;
                 //todo: можно сортировать leftNearest по количеству категорий и не пересекать те точки, у которых категорий меньше чем у best
@@ -43,7 +43,7 @@ namespace GarbageCollector.Domain
                     {
                         var currentPointIntersectCount = leftCategories
                             .Join(currentPoint.AcceptingCategories,
-                                cat => cat, cat => cat, (cat1, cat2) => 1)
+                                cat => cat.Id, cat => cat.Id, (cat1, cat2) => 1)
                             .Count();
                         if (currentPointIntersectCount > 0 &&
                             currentPointIntersectCount > bestPointAcc.BestIntersectCount)

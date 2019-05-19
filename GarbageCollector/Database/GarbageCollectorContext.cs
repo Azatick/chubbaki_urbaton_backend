@@ -9,7 +9,6 @@ namespace GarbageCollector.Database.Dbos
         {
         }
 
-        public DbSet<LocationDbo> Locations { get; set; }
         public DbSet<WasteCategoryDbo> WasteCategories { get; set; }
         public DbSet<WasteTakePointDbo> WasteTakePoints { get; set; }
         public DbSet<GarbageAppUserDbo> AppUsers { get; set; }

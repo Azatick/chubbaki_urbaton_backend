@@ -20,7 +20,8 @@ namespace GarbageCollector.Domain.Services
         public async Task<WasteTakePoint[]> GetNearestTakePoinsAsync(Location location)
         {
             var magicValue = GetKilometers(1);
-            var takePointDbos = await context.WasteTakePoints
+            var takePointDbos = await context.WasteTakePoints.Include(x => x.Location).Include(x => x
+            .LinksToCategories).ThenInclude(x => x.WasteTakePoint)
                 .Where(x => x.Location.Coordinates.Distance(location.Coordinates) < magicValue)
                 .OrderBy(x => x.Location.Coordinates.Distance(location.Coordinates))
                 .ToArrayAsync().ConfigureAwait(false);

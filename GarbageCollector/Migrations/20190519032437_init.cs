@@ -4,22 +4,23 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace GarbageCollector.Migrations
 {
-    public partial class initial : Migration
+    public partial class init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.Sql("CREATE EXTENSION IF NOT EXISTS postgis;");
             migrationBuilder.CreateTable(
-                name: "Locations",
+                name: "AppUsers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Address = table.Column<string>(nullable: true),
-                    Coordinates = table.Column<IPoint>(nullable: true)
+                    Login = table.Column<string>(nullable: true),
+                    CurrentLocation_Address = table.Column<string>(nullable: true),
+                    CurrentLocation_Coordinates = table.Column<IPoint>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Locations", x => x.Id);
+                    table.PrimaryKey("PK_AppUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -36,41 +37,17 @@ namespace GarbageCollector.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "AppUsers",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(nullable: false),
-                    Login = table.Column<string>(nullable: true),
-                    CurrentLocationId = table.Column<Guid>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AppUsers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_AppUsers_Locations_CurrentLocationId",
-                        column: x => x.CurrentLocationId,
-                        principalTable: "Locations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "WasteTakePoints",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(nullable: true),
-                    LocationId = table.Column<Guid>(nullable: true)
+                    Location_Address = table.Column<string>(nullable: true),
+                    Location_Coordinates = table.Column<IPoint>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_WasteTakePoints", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_WasteTakePoints_Locations_LocationId",
-                        column: x => x.LocationId,
-                        principalTable: "Locations",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -149,11 +126,6 @@ namespace GarbageCollector.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_AppUsers_CurrentLocationId",
-                table: "AppUsers",
-                column: "CurrentLocationId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_TrashCanDbo_UserId",
                 table: "TrashCanDbo",
                 column: "UserId");
@@ -172,11 +144,6 @@ namespace GarbageCollector.Migrations
                 name: "IX_TrashCanToCategoryLinkDbo_TrashCanId",
                 table: "TrashCanToCategoryLinkDbo",
                 column: "TrashCanId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_WasteTakePoints_LocationId",
-                table: "WasteTakePoints",
-                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_WasteTakePointToCategoryLinkDbo_CategoryId",
@@ -208,9 +175,6 @@ namespace GarbageCollector.Migrations
 
             migrationBuilder.DropTable(
                 name: "WasteTakePoints");
-
-            migrationBuilder.DropTable(
-                name: "Locations");
         }
     }
 }

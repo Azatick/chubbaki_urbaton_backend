@@ -9,7 +9,7 @@ namespace GarbageCollector.ViewModels
 
         public string Login { get; set; }
 
-        public TrashCan[] TrashCans { get; set; }
+        public TrashCanViewModel[] TrashCans { get; set; }
 
         public LocationViewModel CurrentLocation { get; set; }
 

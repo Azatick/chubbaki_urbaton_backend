@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace GarbageCollector.Migrations
 {
     [DbContext(typeof(GarbageCollectorContext))]
-    [Migration("20190518184648_initial")]
-    partial class initial
+    [Migration("20190519032437_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,28 +26,11 @@ namespace GarbageCollector.Migrations
                 {
                     b.Property<Guid>("Id");
 
-                    b.Property<Guid>("CurrentLocationId");
-
                     b.Property<string>("Login");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CurrentLocationId");
-
                     b.ToTable("AppUsers");
-                });
-
-            modelBuilder.Entity("GarbageCollector.Database.Dbos.LocationDbo", b =>
-                {
-                    b.Property<Guid>("Id");
-
-                    b.Property<string>("Address");
-
-                    b.Property<IPoint>("Coordinates");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("GarbageCollector.Database.Dbos.TrashCanDbo", b =>
@@ -101,13 +84,9 @@ namespace GarbageCollector.Migrations
                 {
                     b.Property<Guid>("Id");
 
-                    b.Property<Guid?>("LocationId");
-
                     b.Property<string>("Name");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("LocationId");
 
                     b.ToTable("WasteTakePoints");
                 });
@@ -131,10 +110,23 @@ namespace GarbageCollector.Migrations
 
             modelBuilder.Entity("GarbageCollector.Database.Dbos.GarbageAppUserDbo", b =>
                 {
-                    b.HasOne("GarbageCollector.Database.Dbos.LocationDbo", "CurrentLocation")
-                        .WithMany()
-                        .HasForeignKey("CurrentLocationId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                    b.OwnsOne("GarbageCollector.Database.Dbos.LocationDbo", "CurrentLocation", b1 =>
+                        {
+                            b1.Property<Guid>("GarbageAppUserDboId");
+
+                            b1.Property<string>("Address");
+
+                            b1.Property<IPoint>("Coordinates");
+
+                            b1.HasKey("GarbageAppUserDboId");
+
+                            b1.ToTable("AppUsers");
+
+                            b1.HasOne("GarbageCollector.Database.Dbos.GarbageAppUserDbo")
+                                .WithOne("CurrentLocation")
+                                .HasForeignKey("GarbageCollector.Database.Dbos.LocationDbo", "GarbageAppUserDboId")
+                                .OnDelete(DeleteBehavior.Cascade);
+                        });
                 });
 
             modelBuilder.Entity("GarbageCollector.Database.Dbos.TrashCanDbo", b =>
@@ -165,9 +157,23 @@ namespace GarbageCollector.Migrations
 
             modelBuilder.Entity("GarbageCollector.Database.Dbos.WasteTakePointDbo", b =>
                 {
-                    b.HasOne("GarbageCollector.Database.Dbos.LocationDbo", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationId");
+                    b.OwnsOne("GarbageCollector.Database.Dbos.LocationDbo", "Location", b1 =>
+                        {
+                            b1.Property<Guid>("WasteTakePointDboId");
+
+                            b1.Property<string>("Address");
+
+                            b1.Property<IPoint>("Coordinates");
+
+                            b1.HasKey("WasteTakePointDboId");
+
+                            b1.ToTable("WasteTakePoints");
+
+                            b1.HasOne("GarbageCollector.Database.Dbos.WasteTakePointDbo")
+                                .WithOne("Location")
+                                .HasForeignKey("GarbageCollector.Database.Dbos.LocationDbo", "WasteTakePointDboId")
+                                .OnDelete(DeleteBehavior.Cascade);
+                        });
                 });
 
             modelBuilder.Entity("GarbageCollector.Database.Dbos.WasteTakePointToCategoryLinkDbo", b =>

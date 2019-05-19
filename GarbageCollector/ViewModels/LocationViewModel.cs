@@ -4,7 +4,6 @@ namespace GarbageCollector.ViewModels
 {
     public class LocationViewModel
     {
-        public Guid Id { get; set; }
         
         public string Address { get; set; }
         

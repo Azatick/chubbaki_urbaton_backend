@@ -11,8 +11,7 @@ namespace GarbageCollector.Database.Dbos
         public Guid Id { get; set; }
 
         public string Login { get; set; }
-        public Guid CurrentLocationId { get; set; }
-        [ForeignKey("CurrentLocationId")]
+
         public LocationDbo CurrentLocation { get; set; }
 
         public List<TrashCanDbo> TrashCans { get; set; }
