@@ -65,14 +65,7 @@ namespace GarbageCollector
                 c.SwaggerDoc("v1", new Info { Title = "GarbageCollector API", Version = "v1" });
                 
             });
-            services.AddCors(options =>
-            {
-                options.AddPolicy(CorsPolicyName,
-                    builder => builder
-                        .AllowAnyOrigin()
-                        .AllowAnyMethod()
-                        .AllowAnyHeader());
-            });
+            services.AddCors();
 
 
         }
@@ -97,7 +90,7 @@ namespace GarbageCollector
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
-            app.UseCors(CorsPolicyName);
+            app.UseCors(builder => builder.AllowAnyOrigin());
         }
     }
 }
