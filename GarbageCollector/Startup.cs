@@ -97,6 +97,7 @@ namespace GarbageCollector
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
+            app.UseCors(CorsPolicyName);
         }
     }
 }
