@@ -50,9 +50,8 @@ namespace GarbageCollector.Mapping
             CreateMap<UserViewModel, GarbageAppUser>()
                 .IncludeAllDerived()
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                .ForMember(model => model.TrashCans, opt => opt.Ignore())
                 .ReverseMap();
-            
+
             CreateMap<Location, LocationViewModel>()
                 .IncludeAllDerived()
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
