@@ -32,6 +32,17 @@ namespace GarbageCollector.Mapping
                     opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
                 .ReverseMap()
+                .ForMember(dbo => dbo.LinksToCategories, opt => opt
+                    .MapFrom(
+                        can => can
+                            .WasteCategories
+                            .Select(x => new TrashCanToCategoryLinkDbo()
+                            {
+                                CategoryId = x.Id, TrashCanId = can.Id, Id
+                                    = Guid.NewGuid()
+                            })
+                            .ToList())
+                )
                 .BeforeMap((can, dbo) =>
                 {
                     if (can.Id == Guid.Empty)
@@ -39,6 +50,8 @@ namespace GarbageCollector.Mapping
                         can.Id = Guid.NewGuid();
                     }
                 });
+
+
             CreateMap<WasteCategoryDbo, WasteCategory>()
                 .IncludeAllDerived()
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
