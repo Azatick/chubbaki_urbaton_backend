@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using AutoMapper;
 using GarbageCollector.Database.Dbos;
@@ -30,11 +31,25 @@ namespace GarbageCollector.Mapping
                 .ForMember(tc => tc.WasteCategories,
                     opt => opt.MapFrom(dbo => dbo.LinksToCategories.Select(x => x.Category).ToHashSet()))
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                .ReverseMap();
+                .ReverseMap()
+                .BeforeMap((can, dbo) =>
+                {
+                    if (can.Id == Guid.Empty)
+                    {
+                        can.Id = new Guid();
+                    }
+                });
             CreateMap<WasteCategoryDbo, WasteCategory>()
                 .IncludeAllDerived()
                 .IgnoreAllPropertiesWithAnInaccessibleSetter()
-                .ReverseMap();
+                .ReverseMap()
+                .BeforeMap((category, dbo) =>
+                {
+                    if (category.Id == Guid.Empty)
+                    {
+                        category.Id = new Guid();
+                    }
+                });
 
             CreateMap<WasteTakePointDbo, WasteTakePoint>()
                 .IncludeAllDerived()

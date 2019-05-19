@@ -70,6 +70,7 @@ namespace GarbageCollector.Domain
 
             TrashCans = acceptableTakePoints.Select(tp => new TrashCan()
             {
+                Name = "Корзина для " + tp.Name,
                 WasteCategories = tp.AcceptingCategories,
                 WasteTakePoint = tp
             }).ToHashSet();
